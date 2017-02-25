@@ -12,17 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/reservations")
-public class ReservationResource {
+public class BikeReservationResource {
 	
 	@PostMapping
-	public ResponseEntity<Reservation> save(@RequestBody Reservation reservation) {
+	public ResponseEntity<BikeReservation> save(@RequestBody BikeReservation reservation) {
 		//save in database
+		reservation.setId(1L);
 		return ResponseEntity.ok(reservation);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Reservation>> findAll() {
-		return ResponseEntity.ok(Arrays.asList(Reservation.builder().build()));
+	public ResponseEntity<List<BikeReservation>> findAll() {
+		return ResponseEntity.ok(Arrays.asList(BikeReservation.builder().build()));
 	}
 
 }
