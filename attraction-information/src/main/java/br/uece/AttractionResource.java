@@ -3,6 +3,7 @@ package br.uece;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttractionResource {
 	
 	@GetMapping
-	public List<Attraction> searchAttractions() {
+	public ResponseEntity<List<Attraction>> searchAttractions() {
 		
 		List<Attraction> attractions = Arrays.asList(Attraction.builder().id(1L).name("Attraction 1").build(),
 				Attraction.builder().id(2L).name("Attraction").build(),
@@ -20,7 +21,7 @@ public class AttractionResource {
 				Attraction.builder().id(4L).name("Attraction 4").build(),
 				Attraction.builder().id(5L).name("Attraction 5").build());
 		
-		return attractions;
+		return ResponseEntity.ok(attractions);
 	}
 
 }
