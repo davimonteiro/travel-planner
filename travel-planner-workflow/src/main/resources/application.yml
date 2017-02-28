@@ -1,0 +1,14 @@
+#Server Specifics
+server:
+  port: 9000
+
+spring:  
+  application:
+    name: travel-planner-workflow
+
+eureka:  
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true

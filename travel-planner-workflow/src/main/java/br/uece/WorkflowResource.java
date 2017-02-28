@@ -38,11 +38,11 @@ public class WorkflowResource {
 	@Autowired
 	private ObjectMapper mapper;
 
-	private static final String URL_ATTRACTION_INFORMATION = "http://localhost:8080/";
-	private static final String URL_BIKE_RENTAL = "http://localhost:8081/";
-	private static final String URL_CAR_RENTAL = "http://localhost:8082/";
-	private static final String URL_FLIGHT_RESERVATON = "http://localhost:8083/";
-	private static final String URL_HOTEL_RESERVATON = "http://localhost:8084/";
+	private static final String URL_ATTRACTION_INFORMATION = "http://attraction-information/";
+	private static final String URL_BIKE_RENTAL = "http://bike-rental/";
+	private static final String URL_CAR_RENTAL = "http://car-rental/";
+	private static final String URL_FLIGHT_RESERVATON = "http://flight-reservation/";
+	private static final String URL_HOTEL_RESERVATON = "http://hotel-reservation/";
 
 	@GetMapping
 	public String startWorkFlow() throws Exception {

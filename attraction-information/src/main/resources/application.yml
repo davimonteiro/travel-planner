@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+spring:  
+  application:
+    name: attraction-information
+    
+eureka:  
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
