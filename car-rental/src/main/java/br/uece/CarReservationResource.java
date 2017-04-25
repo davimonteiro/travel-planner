@@ -10,18 +10,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
 @RequestMapping("/reservations")
 public class CarReservationResource {
 	
-	@PostMapping
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<CarReservation> save(@RequestBody CarReservation reservation) {
 		//save in database
 		reservation.setId(1L);
 		return ResponseEntity.ok(reservation);
 	}
 	
-	@GetMapping
+	@GetMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<CarReservation>> findAll() {
 		return ResponseEntity.ok(Arrays.asList(CarReservation.builder().build()));
 	}

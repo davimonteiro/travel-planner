@@ -1,10 +1,11 @@
 package br.uece;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
-@Builder
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class Attraction {
 
 	private Long id;

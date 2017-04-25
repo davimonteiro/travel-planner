@@ -6,8 +6,15 @@
 	<packaging>jar</packaging>
 	<name>travel-planner-workflow</name>
 	<description>Demo project for Spring Boot</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>1.4.4.RELEASE</version>
+        </dependency>
+    </dependencies>
 
-	<parent>
+    <parent>
 		<groupId>br.uece</groupId>
 		<artifactId>travel-planner</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
