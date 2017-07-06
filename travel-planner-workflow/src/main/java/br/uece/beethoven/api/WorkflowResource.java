@@ -128,11 +128,11 @@ public class WorkflowResource {
         taskRepository.save(workflow.getTasks());
 
         // Log
-        System.err.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(workflow));
-        System.err.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events));
-        System.err.println(workflow);
-        System.err.println(events);
-        System.err.println(actorSystem.guardian().path());
+//        System.err.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(workflow));
+//        System.err.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events));
+//        System.err.println(workflow);
+//        System.err.println(events);
+//        System.err.println(actorSystem.guardian().path());
 
 
         actorSystem.actorSelection(ActorPath.DECIDER_ACTOR).tell(new DeciderActor.WorkflowScheduledEvent("TravelPlanner"), ActorRef.noSender());

@@ -4,7 +4,6 @@ package br.uece.beethoven.engine.core;
 import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 import br.uece.beethoven.repository.TaskRepository;
 import br.uece.beethoven.service.TaskService;
@@ -16,13 +15,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import scala.concurrent.duration.Duration;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component("TaskActor")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TaskActor extends AbstractLoggingActor {
-
-    private static final String DECIDER_ACTOR = "/user/DeciderActor";
 
     @Autowired
     private ActorSystem actorSystem;
@@ -47,20 +45,37 @@ public class TaskActor extends AbstractLoggingActor {
         //taskService.start(task, startTaskCommand.input, startTaskCommand.instanceName);
 
         log().debug("onStartTaskCommand: " + startTaskCommand);
-        actorSystem.actorSelection(DECIDER_ACTOR)
+
+        String taskInstanceName = UUID.randomUUID().toString();
+        actorSystem.actorSelection(ActorPath.DECIDER_ACTOR)
                 .tell(new DeciderActor.TaskStartedEvent(startTaskCommand.taskName,
                         startTaskCommand.input,
-                        startTaskCommand.instanceName,
+                        startTaskCommand.workflowInstanceName,
                         startTaskCommand.workflowName), ActorRef.noSender());
+
+        actorSystem.actorSelection(ActorPath.REPORT_ACTOR)
+                .tell(new ReportActor.ReportTaskStartedEvent(startTaskCommand.taskName,
+                        taskInstanceName,
+                        startTaskCommand.workflowInstanceName,
+                        startTaskCommand.workflowName), ActorRef.noSender());
+
+
 
         // Some minutes later
         actorSystem.scheduler().scheduleOnce(Duration.create(5, TimeUnit.SECONDS), () -> {
             String output = "";
-            actorSystem.actorSelection(DECIDER_ACTOR)
+            actorSystem.actorSelection(ActorPath.DECIDER_ACTOR)
                     .tell(new DeciderActor.TaskCompletedEvent(startTaskCommand.taskName,
                             output,
-                            startTaskCommand.instanceName,
+                            startTaskCommand.workflowInstanceName,
                             startTaskCommand.workflowName), ActorRef.noSender());
+
+            actorSystem.actorSelection(ActorPath.REPORT_ACTOR)
+                    .tell(new ReportActor.ReportTaskCompletedEvent(startTaskCommand.taskName,
+                            taskInstanceName,
+                            startTaskCommand.workflowInstanceName,
+                            startTaskCommand.workflowName), ActorRef.noSender());
+
         }, actorSystem.dispatcher());
 
     }
@@ -78,7 +93,7 @@ public class TaskActor extends AbstractLoggingActor {
         private String taskName;
         private String workflowName;
         private String input;
-        private String instanceName;
+        private String workflowInstanceName;
     }
 
     /*******************************************************************************/
