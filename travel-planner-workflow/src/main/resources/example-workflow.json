@@ -1,0 +1,62 @@
+{
+  "name" : "ConsumerEnrollmentWorkflow",
+  "tasks" : [ {
+    "name" : "sendWelcomePack",
+    "httpRequest" : {
+      "url" : "http://welcome-microservice/packs",
+      "method" : "POST"
+    }
+  }, {
+    "name" : "createLoyaltyRecord",
+    "httpRequest" : {
+      "url" : "http://loyalty-microservice/loyalties",
+      "method" : "POST"
+    }
+  }, {
+    "name" : "sendWelcomeEmail",
+    "httpRequest" : {
+      "url" : "http://welcome-microservice/emails",
+      "method" : "POST"
+    }
+  }, {
+    "name" : "createCustomerRecord",
+    "httpRequest" : {
+      "url" : "http://customer-microservice/customers",
+      "method" : "POST"
+    }
+  } ],
+  "eventHandlers" : [{
+    "eventType" : "WORKFLOW_STARTED",
+    "conditions" : [ {
+      "workflowName" : "ConsumerEnrollmentWorkflow",
+      "operator" : "WORKFLOW_NAME_EQUALS_TO"
+    } ],
+    "commands" : [ {
+      "operation" : "START_TASK",
+      "taskName" : "createCustomerRecord"
+    } ]
+  }, {
+    "eventType" : "TASK_COMPLETED",
+    "conditions" : [ {
+      "taskName" : "createCustomerRecord",
+      "operator" : "TASK_NAME_EQUALS_TO"
+    } ],
+    "commands" : [ {
+      "operation" : "START_TASK",
+      "taskName" : "createLoyaltyRecord"
+    }, {
+      "operation" : "START_TASK",
+      "taskName" : "sendWelcomePack"
+    }, {
+      "operation" : "START_TASK",
+      "taskName" : "sendWelcomeEmail"
+    } ]
+  } ]
+}
+
+
+
+
+
+
+

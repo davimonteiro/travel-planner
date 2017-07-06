@@ -1,55 +1,39 @@
 package br.uece.beethoven.logic.dsl;
 
-import br.uece.beethoven.engine.Task;
-import br.uece.beethoven.engine.Workflow;
+import br.uece.beethoven.engine.dsl.EventType;
 
 import java.util.Arrays;
 
 public class EventDslBuilder {
 
-    private EventDsl eventDsl;
+    private EventHandler eventHandler;
 
     public EventDslBuilder() {
-        this.eventDsl = new EventDsl();
+        this.eventHandler = new EventHandler();
     }
 
     public static EventDslBuilder eventDsl() {
         return new EventDslBuilder();
     }
 
-    public EventDslBuilder on(Task.TaskEvent taskEvent) {
-        eventDsl.setTaskEvent(taskEvent);
-        return this;
-    }
-
-    public EventDslBuilder on(Workflow.WorkflowEvent workflowEvent) {
-        eventDsl.setWorkflowEvent(workflowEvent);
+    public EventDslBuilder on(EventType eventType) {
+        eventHandler.setEventType(eventType);
         return this;
     }
 
     public EventDslBuilder when(Condition ... conditions) {
-        this.eventDsl.getConditions().addAll(Arrays.asList(conditions));
+        eventHandler.getConditions().addAll(Arrays.asList(conditions));
         return this;
     }
 
-    public EventDsl then(DslAction dslAction) {
-        this.eventDsl.setDslAction(dslAction);
-        return this.eventDsl;
+    public EventHandler then(Command ... commands) {
+        eventHandler.getCommands().addAll(Arrays.asList(commands));
+        return eventHandler;
     }
 
     // TODO Conditions
     // taskNameEqualsTo('searchHotelsTask')
     // taskNameNotEqualsTo('searchHotelsTask')
     // taskResponseEqualsTo(jsonPath, matchers)
-
-    // TODO DslActions
-    // startTask(name)
-
-    // startWorkflow(name)
-    // stopWorkflow(name)
-    // cancelWorkflow(name)
-
-
-
 
 }

@@ -1,4 +1,4 @@
-package br.uece.beethoven.engine;
+package br.uece.beethoven.engine.dsl;
 
 import org.springframework.http.HttpMethod;
 
@@ -8,10 +8,10 @@ import static java.util.Objects.requireNonNull;
 
 public class HttpActionBuilder {
 
-    private HttpAction httpAction;
+    private HttpRequest httpRequest;
 
     public HttpActionBuilder() {
-        this.httpAction = new HttpAction();
+        this.httpRequest = new HttpRequest();
     }
 
     public static HttpActionBuilder request() {
@@ -20,46 +20,46 @@ public class HttpActionBuilder {
 
     public HttpActionBuilder get(String url) {
         requireNonNull(url);
-        httpAction.setUrl(url);
-        httpAction.setMethod(HttpMethod.GET);
+        httpRequest.setUrl(url);
+        httpRequest.setMethod(HttpMethod.GET);
         return this;
     }
 
     public HttpActionBuilder post(String url) {
         requireNonNull(url);
-        httpAction.setUrl(url);
-        httpAction.setMethod(HttpMethod.POST);
+        httpRequest.setUrl(url);
+        httpRequest.setMethod(HttpMethod.POST);
         return this;
     }
 
     public HttpActionBuilder put(String url) {
         requireNonNull(url);
-        httpAction.setUrl(url);
-        httpAction.setMethod(HttpMethod.PUT);
+        httpRequest.setUrl(url);
+        httpRequest.setMethod(HttpMethod.PUT);
         return this;
     }
 
     public HttpActionBuilder delete(String url) {
         requireNonNull(url);
-        httpAction.setUrl(url);
-        httpAction.setMethod(HttpMethod.DELETE);
+        httpRequest.setUrl(url);
+        httpRequest.setMethod(HttpMethod.DELETE);
         return this;
     }
 
     public HttpActionBuilder uriVariables(Map<String, ?> uriVariables) {
         requireNonNull(uriVariables);
-        httpAction.setUriVariables(uriVariables);
+        httpRequest.setUriVariables(uriVariables);
         return this;
     }
 
     public HttpActionBuilder body(String body) {
         requireNonNull(body);
-        httpAction.setBody(body);
+        httpRequest.setBody(body);
         return this;
     }
 
-    public HttpAction build() {
-        return this.httpAction;
+    public HttpRequest build() {
+        return this.httpRequest;
     }
 
 }

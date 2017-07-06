@@ -1,21 +1,22 @@
-package br.uece.beethoven.engine;
+package br.uece.beethoven.engine.dsl;
 
 
+import br.uece.beethoven.logic.dsl.EventHandler;
 import lombok.Data;
+import lombok.ToString;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
+@ToString
 public class Workflow {
 
     private String name;
 
     private Set<Task> tasks;
 
-    // https://github.com/aws/aws-sdk-java/blob/master/aws-java-sdk-simpleworkflow/src/main/java/com/amazonaws/services/simpleworkflow/model/EventType.java
-    public enum WorkflowEvent {
-        WORKFLOW_SCHEDULED, WORKFLOW_STARTED, WORKFLOW_COMPLETED;
-    }
+    private Set<EventHandler> eventHandlers;
 
 
     public enum  WorkflowStatus {

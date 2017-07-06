@@ -1,4 +1,4 @@
-package br.uece.beethoven.engine;
+package br.uece.beethoven.engine.dsl;
 
 import lombok.Data;
 
@@ -7,7 +7,7 @@ public class Task {
 
     private String name;
 
-    private Action action;
+    private HttpRequest httpRequest;
 
     private TaskStatus status;
 
@@ -49,10 +49,6 @@ public class Task {
         public boolean isRetriable(){
             return retriable;
         }
-    }
-
-    public enum TaskEvent {
-        TASK_STARTED, TASK_COMPLETED, TASK_TIMEDOUT, TASK_FAILED
     }
 
 }

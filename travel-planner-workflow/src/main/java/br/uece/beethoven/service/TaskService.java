@@ -1,8 +1,9 @@
 package br.uece.beethoven.service;
 
 
-import br.uece.beethoven.engine.HttpAction;
-import br.uece.beethoven.engine.Task;
+import akka.actor.ActorSystem;
+import br.uece.beethoven.engine.dsl.HttpRequest;
+import br.uece.beethoven.engine.dsl.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,15 +23,18 @@ public class TaskService {
     @Autowired
     private AsyncRestTemplate asyncRestTemplate;
 
+    @Autowired
+    private ActorSystem actorSystem;
+
     @Async
-    public void start(Task task) {
-        HttpAction httpAction = (HttpAction) task.getAction();
+    public void start(Task task, String input, String instanceId) {
+        HttpRequest httpRequest = task.getHttpRequest();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity entity = new HttpEntity(httpAction.getBody(), headers);
-        ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(httpAction.getUrl(), httpAction.getMethod(), entity, String.class);
+        HttpEntity entity = new HttpEntity(httpRequest.getBody(), headers);
+        ListenableFuture<ResponseEntity<String>> future = asyncRestTemplate.exchange(httpRequest.getUrl(), httpRequest.getMethod(), entity, String.class);
 
         // TODO Publish TASK_STARTED
         System.out.println("TASK_STARTED - " + task.getName());
@@ -44,6 +48,7 @@ public class TaskService {
                 System.err.println(responseEntity.getBody());
                 task.setResponse(responseEntity.getBody());
                 task.setStatus(Task.TaskStatus.COMPLETED);
+                //actorSystem.actorSelection("/user/EventActor").tell(new DeciderActor.FiredEvent(instanceId, EventType.TASK_STARTED, task.getName()), ActorRef.noSender());
             }
 
             @Override

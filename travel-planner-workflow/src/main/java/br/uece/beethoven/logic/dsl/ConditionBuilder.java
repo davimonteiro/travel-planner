@@ -1,7 +1,6 @@
 package br.uece.beethoven.logic.dsl;
 
 
-import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matcher;
 
 public class ConditionBuilder {
@@ -17,24 +16,22 @@ public class ConditionBuilder {
     }
 
     public Condition workflowNameEqualsTo(String name) {
-        this.condition.setResult(condition.getWorkflow().getName().equals(name));
+        condition.setWorkflowName(name);
+        condition.setOperator(Condition.Operator.WORKFLOW_NAME_EQUALS_TO);
         return this.condition;
     }
 
 
     public Condition taskNameEqualsTo(String name) {
-        this.condition.setResult(condition.getTask().getName().equals(name));
-        return this.condition;
-    }
-
-    public Condition taskNameNotEqualsTo(String name) {
-        this.condition.setResult(!condition.getTask().getName().equals(name));
+        condition.setTaskName(name);
+        condition.setOperator(Condition.Operator.TASK_NAME_EQUALS_TO);
         return this.condition;
     }
 
     public Condition taskResponseEqualsTo(String jsonPath, Matcher matcher) {
-        String path = JsonPath.compile(this.condition.getTask().getResponse()).getPath();
-        this.condition.setResult(matcher.matches(path));
+        condition.setJsonPath(jsonPath);
+        condition.setMatcher(matcher);
+        condition.setOperator(Condition.Operator.TASK_RESPONSE_EQUALS_TO);
         return this.condition;
     }
 

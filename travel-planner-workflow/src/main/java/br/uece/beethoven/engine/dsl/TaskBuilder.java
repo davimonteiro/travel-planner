@@ -1,4 +1,4 @@
-package br.uece.beethoven.engine;
+package br.uece.beethoven.engine.dsl;
 
 
 import static java.util.Objects.*;
@@ -21,9 +21,9 @@ public class TaskBuilder {
         return this;
     }
 
-    public Task doIt(Action action) {
-        requireNonNull(action);
-        task.setAction(action);
+    public Task doIt(HttpRequest httpRequest) {
+        requireNonNull(httpRequest);
+        task.setHttpRequest(httpRequest);
         return this.task;
     }
 

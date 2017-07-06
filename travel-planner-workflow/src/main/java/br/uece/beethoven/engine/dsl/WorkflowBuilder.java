@@ -1,7 +1,8 @@
-package br.uece.beethoven.engine;
+package br.uece.beethoven.engine.dsl;
+
+import br.uece.beethoven.logic.dsl.EventHandler;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,10 +24,19 @@ public class WorkflowBuilder {
         return this;
     }
 
-    public Workflow tasks(Task... tasks) {
+    public WorkflowBuilder tasks(Task... tasks) {
         this.workflow.setTasks(new HashSet<>());
         for (Task task : tasks) {
             workflow.getTasks().add(task);
+        }
+
+        return this;
+    }
+
+    public Workflow eventHandlers(EventHandler... eventHandlers) {
+        this.workflow.setEventHandlers(new HashSet<>());
+        for (EventHandler eventHandler : eventHandlers) {
+            workflow.getEventHandlers().add(eventHandler);
         }
 
         return this.workflow;

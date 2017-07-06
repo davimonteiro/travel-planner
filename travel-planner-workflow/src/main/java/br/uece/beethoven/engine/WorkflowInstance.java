@@ -1,7 +1,9 @@
 package br.uece.beethoven.engine;
 
-/**
- * Created by davimonteiro on 24/04/17.
- */
+import lombok.Data;
+
+@Data
 public class WorkflowInstance {
+    private String instanceName;
+    private String workflowName;
 }

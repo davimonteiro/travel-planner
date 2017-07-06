@@ -1,4 +1,4 @@
-package br.uece.beethoven.engine;
+package br.uece.beethoven.engine.dsl;
 
 
 import lombok.Data;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod;
 import java.util.Map;
 
 @Data
-public class HttpAction implements Action {
+public class HttpRequest {
 
     private String url;
 
@@ -16,9 +16,5 @@ public class HttpAction implements Action {
     private String body;
 
     private Map<String, ?> uriVariables;
-
-
-    @Override
-    public void process() { }
 
 }
