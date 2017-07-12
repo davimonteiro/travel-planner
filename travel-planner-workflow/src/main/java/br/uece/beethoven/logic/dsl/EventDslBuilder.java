@@ -31,9 +31,4 @@ public class EventDslBuilder {
         return eventHandler;
     }
 
-    // TODO Conditions
-    // taskNameEqualsTo('searchHotelsTask')
-    // taskNameNotEqualsTo('searchHotelsTask')
-    // taskResponseEqualsTo(jsonPath, matchers)
-
 }
