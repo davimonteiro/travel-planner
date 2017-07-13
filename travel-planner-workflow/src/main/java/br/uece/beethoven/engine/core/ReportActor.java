@@ -65,13 +65,11 @@ public class ReportActor extends AbstractLoggingActor {
     }
 
     private void onReportTaskCompletedEvent(ReportTaskCompletedEvent reportTaskCompletedEvent) {
-        /*workflowInstances.get(reportTaskCompletedEvent.workflowInstanceName)
-                .getTasks().get(reportTaskCompletedEvent.getTaskInstanceName())
-                .getExecutionTime().time().stop();*/
+
 
         Map<String, TaskInstance> tasks = workflowInstances.get(reportTaskCompletedEvent.workflowInstanceName).getTasks();
         if (tasks != null && !tasks.isEmpty()) {
-            TaskInstance taskInstance = tasks.get(reportTaskCompletedEvent.getTaskInstanceName());
+            TaskInstance taskInstance = tasks.get(reportTaskCompletedEvent.taskInstanceName);
             if (taskInstance != null) {
                 long stop = taskInstance.getTimer().time().stop();
                 taskInstance.setExecutionTime(stop);
@@ -81,8 +79,14 @@ public class ReportActor extends AbstractLoggingActor {
 
         if (isCompleted(reportTaskCompletedEvent.workflowName, reportTaskCompletedEvent.workflowInstanceName)) {
             workflowInstances.values().forEach(instance -> {
-                long sum = instance.getTasks().values().stream().mapToLong(TaskInstance::getExecutionTime).sum();
-                instance.setExecutionTime(sum);
+
+                /*long total = 0;
+                for (TaskInstance taskInstance : instance.getTasks().values()) {
+                    total += taskInstance.getExecutionTime();
+                }*/
+
+                long total = instance.getTasks().values().stream().mapToLong(TaskInstance::getExecutionTime).sum();
+                instance.setExecutionTime(total);
 
                 System.err.println("Workflow name: " + instance.getWorkflowName());
                 System.err.println("Instance name: " + instance.getInstanceName());
@@ -112,10 +116,7 @@ public class ReportActor extends AbstractLoggingActor {
     }
 
 
-
-
     /* Workflow */
-
     @Data @AllArgsConstructor
     public static class ReportWorkflowStartedEvent {
         private String workflowName;

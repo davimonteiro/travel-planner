@@ -30,19 +30,20 @@ public class WorkflowActor extends AbstractLoggingActor {
     @Autowired
     private ActorSystem actorSystem;
 
-    /**
-     *
-     * @return
-     */
     @Override
     public Receive createReceive() {
         Receive receive = ReceiveBuilder.create()
+                .match(ScheduleWorkflowCommand.class, this::onScheduleWorkflowCommand)
                 .match(StartWorkflowCommand.class, this::onStartWorkflowCommand)
                 .match(StopWorkflowCommand.class, this::onStopWorkflowCommand)
                 .match(CancelWorkflowCommand.class, this::onCancelWorkflowCommand)
                 .build();
 
         return receive;
+    }
+
+    private void onScheduleWorkflowCommand(ScheduleWorkflowCommand scheduleWorkflowCommand) {
+        log().debug("onScheduleWorkflowCommand: " + scheduleWorkflowCommand);
     }
 
     private void onStartWorkflowCommand(StartWorkflowCommand startWorkflowCommand) {
@@ -73,9 +74,15 @@ public class WorkflowActor extends AbstractLoggingActor {
 
     /*******************************************************************************
      *
-     * Workflow Commands: START_WORKFLOW, STOP_WORKFLOW, CANCEL_WORKFLOW
+     * Workflow Commands: SCHEDULE_WORKFLOW, START_WORKFLOW,
+     *                    STOP_WORKFLOW, CANCEL_WORKFLOW
      *
      *******************************************************************************/
+    @Data @AllArgsConstructor
+    public static class ScheduleWorkflowCommand {
+        private String workflowName;
+    }
+
     @Data @AllArgsConstructor
     public static class StartWorkflowCommand {
         private String workflowName;

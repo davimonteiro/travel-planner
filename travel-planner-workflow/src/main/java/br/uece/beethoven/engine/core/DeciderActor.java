@@ -42,9 +42,10 @@ public class DeciderActor extends AbstractLoggingActor {
                 .match(WorkflowScheduledEvent.class, this::onWorkflowScheduledEvent)
                 .match(WorkflowStartedEvent.class, this::onWorkflowStartedEvent)
                 .match(WorkflowCompletedEvent.class, this::onWorkflowCompletedEvent)
-//                .match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)
-//                .match(WorkflowCanceledEvent.class, this::onWorkflowCanceledEvent)
-//                .match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)
+
+                /*.match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)
+                .match(WorkflowCanceledEvent.class, this::onWorkflowCanceledEvent)
+                .match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)*/
 
                 .build();
 
@@ -56,7 +57,7 @@ public class DeciderActor extends AbstractLoggingActor {
         log().debug("onWorkflowScheduledEvent: " + workflowScheduledEvent);
 
         actorSystem.actorSelection(ActorPath.WORKFLOW_ACTOR)
-                .tell(new WorkflowActor.StartWorkflowCommand(workflowScheduledEvent.getWorkflowName()), ActorRef.noSender());
+                .tell(new WorkflowActor.StartWorkflowCommand(workflowScheduledEvent.workflowName), ActorRef.noSender());
 
         List<EventHandler> events = eventDslRepository.find(workflowScheduledEvent.workflowName, EventType.WORKFLOW_SCHEDULED);
 
@@ -100,7 +101,6 @@ public class DeciderActor extends AbstractLoggingActor {
             evaluateConditionsAndSendCommands(event.getConditions(), event.getCommands(), taskStartedEvent.instanceName);
         }
 
-        // TODO Record the time spent on task execution
     }
 
     private void onTaskCompletedEvent(TaskCompletedEvent taskCompletedEvent) {
@@ -113,7 +113,6 @@ public class DeciderActor extends AbstractLoggingActor {
             evaluateConditionsAndSendCommands(event.getConditions(), event.getCommands(), taskCompletedEvent.instanceName);
         }
 
-        // TODO Record the time spent on task execution
     }
 
     private void onTaskFailedEvent(TaskFailedEvent taskFailedEvent) {
@@ -173,13 +172,9 @@ public class DeciderActor extends AbstractLoggingActor {
     }
 
     private void sendCommands(List<Command> commands, String instanceName) {
-        // Send a command to start the workflow
-        //actorSystem.actorSelection(WORKFLOW_ACTOR).tell(new WorkflowActor.StartWorkflowCommand(workflowScheduled.workflowName), ActorRef.noSender());
-
         for(Command command : commands) {
             sendCommand(command, instanceName);
         }
-
     }
 
     private void sendCommand(Command command, String instanceName) {
