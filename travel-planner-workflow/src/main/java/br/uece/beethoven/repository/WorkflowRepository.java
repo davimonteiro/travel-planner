@@ -1,7 +1,7 @@
 package br.uece.beethoven.repository;
 
 
-import br.uece.beethoven.engine.dsl.Workflow;
+import br.uece.beethoven.dsl.Workflow;
 import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;

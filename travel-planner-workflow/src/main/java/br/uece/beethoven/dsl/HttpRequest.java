@@ -1,4 +1,4 @@
-package br.uece.beethoven.engine.dsl;
+package br.uece.beethoven.dsl;
 
 
 import lombok.Data;

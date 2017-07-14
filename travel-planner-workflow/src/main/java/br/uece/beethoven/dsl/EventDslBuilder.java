@@ -1,6 +1,4 @@
-package br.uece.beethoven.logic.dsl;
-
-import br.uece.beethoven.engine.dsl.EventType;
+package br.uece.beethoven.dsl;
 
 import java.util.Arrays;
 

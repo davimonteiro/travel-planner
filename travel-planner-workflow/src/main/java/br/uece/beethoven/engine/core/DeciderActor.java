@@ -3,12 +3,11 @@ package br.uece.beethoven.engine.core;
 import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
-import br.uece.beethoven.engine.dsl.EventType;
-import br.uece.beethoven.logic.dsl.Command;
-import br.uece.beethoven.logic.dsl.Condition;
-import br.uece.beethoven.logic.dsl.EventHandler;
+import br.uece.beethoven.dsl.EventType;
+import br.uece.beethoven.dsl.Command;
+import br.uece.beethoven.dsl.Condition;
+import br.uece.beethoven.dsl.EventHandler;
 import br.uece.beethoven.repository.EventDslRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,18 +33,17 @@ public class DeciderActor extends AbstractLoggingActor {
     public Receive createReceive() {
         Receive receive = ReceiveBuilder.create()
 
+                .match(WorkflowScheduledEvent.class, this::onWorkflowScheduledEvent)
+                .match(WorkflowStartedEvent.class, this::onWorkflowStartedEvent)
+                .match(WorkflowCompletedEvent.class, this::onWorkflowCompletedEvent)
+                .match(WorkflowStoppedEvent.class, this::onWorkflowStoppedEvent)
+                .match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)
+                .match(WorkflowCanceledEvent.class, this::onWorkflowCanceledEvent)
+
                 .match(TaskStartedEvent.class, this::onTaskStartedEvent)
                 .match(TaskFailedEvent.class, this::onTaskFailedEvent)
                 .match(TaskCompletedEvent.class, this::onTaskCompletedEvent)
                 .match(TaskTimeoutEvent.class, this::onTaskTimeoutEvent)
-
-                .match(WorkflowScheduledEvent.class, this::onWorkflowScheduledEvent)
-                .match(WorkflowStartedEvent.class, this::onWorkflowStartedEvent)
-                .match(WorkflowCompletedEvent.class, this::onWorkflowCompletedEvent)
-
-                /*.match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)
-                .match(WorkflowCanceledEvent.class, this::onWorkflowCanceledEvent)
-                .match(WorkflowFailedEvent.class, this::onWorkflowFailedEvent)*/
 
                 .build();
 
@@ -69,6 +67,17 @@ public class DeciderActor extends AbstractLoggingActor {
 
     }
 
+    private void onWorkflowStartedEvent(WorkflowStartedEvent workflowStartedEvent) {
+        log().debug("onWorkflowStartedEvent: " + workflowStartedEvent);
+        List<EventHandler> events = eventDslRepository.find(workflowStartedEvent.workflowName, EventType.WORKFLOW_STARTED);
+
+        for (EventHandler event : events) {
+            event.getConditions().forEach(condition -> condition.setActualValues(workflowStartedEvent));
+            event.getCommands().forEach(command -> command.setWorkflowName(workflowStartedEvent.workflowName));
+            evaluateConditionsAndSendCommands(event.getConditions(), event.getCommands(), workflowStartedEvent.instanceName);
+        }
+    }
+
     private void onWorkflowCompletedEvent(WorkflowCompletedEvent workflowCompleted) {
         log().debug("onWorkflowCompletedEvent: " + workflowCompleted);
         List<EventHandler> events = eventDslRepository.find(workflowCompleted.workflowName, EventType.WORKFLOW_COMPLETED);
@@ -80,15 +89,16 @@ public class DeciderActor extends AbstractLoggingActor {
         }
     }
 
-    private void onWorkflowStartedEvent(WorkflowStartedEvent workflowStartedEvent) {
-        log().debug("onWorkflowStartedEvent: " + workflowStartedEvent);
-        List<EventHandler> events = eventDslRepository.find(workflowStartedEvent.workflowName, EventType.WORKFLOW_STARTED);
+    private void onWorkflowStoppedEvent(WorkflowStoppedEvent workflowStoppedEvent) {
+        log().debug("onWorkflowStoppedEvent: " + workflowStoppedEvent);
+    }
 
-        for (EventHandler event : events) {
-            event.getConditions().forEach(condition -> condition.setActualValues(workflowStartedEvent));
-            event.getCommands().forEach(command -> command.setWorkflowName(workflowStartedEvent.workflowName));
-            evaluateConditionsAndSendCommands(event.getConditions(), event.getCommands(), workflowStartedEvent.instanceName);
-        }
+    private void onWorkflowFailedEvent(WorkflowFailedEvent workflowFailedEvent) {
+        log().debug("onWorkflowFailedEvent: " + workflowFailedEvent);
+    }
+
+    private void onWorkflowCanceledEvent(WorkflowCanceledEvent workflowCanceledEvent) {
+        log().debug("onWorkflowCanceledEvent: " + workflowCanceledEvent);
     }
 
     private void onTaskStartedEvent(TaskStartedEvent taskStartedEvent) {
@@ -103,18 +113,6 @@ public class DeciderActor extends AbstractLoggingActor {
 
     }
 
-    private void onTaskCompletedEvent(TaskCompletedEvent taskCompletedEvent) {
-        log().debug("onTaskCompletedEvent: " + taskCompletedEvent);
-        List<EventHandler> events = eventDslRepository.find(taskCompletedEvent.workflowName, EventType.TASK_COMPLETED);
-
-        for (EventHandler event : events) {
-            event.getConditions().forEach(condition -> condition.setActualValues(taskCompletedEvent));
-            event.getCommands().forEach(command -> command.setWorkflowName(taskCompletedEvent.workflowName));
-            evaluateConditionsAndSendCommands(event.getConditions(), event.getCommands(), taskCompletedEvent.instanceName);
-        }
-
-    }
-
     private void onTaskFailedEvent(TaskFailedEvent taskFailedEvent) {
         log().debug("onTaskFailedEvent: " + taskFailedEvent);
         List<EventHandler> events = eventDslRepository.find(taskFailedEvent.workflowName, EventType.TASK_FAILED);
@@ -125,6 +123,18 @@ public class DeciderActor extends AbstractLoggingActor {
         commands.forEach(command -> command.setWorkflowName(taskFailedEvent.workflowName));
 
         evaluateConditionsAndSendCommands(conditions, commands, taskFailedEvent.instanceName);
+    }
+
+    private void onTaskCompletedEvent(TaskCompletedEvent taskCompletedEvent) {
+        log().debug("onTaskCompletedEvent: " + taskCompletedEvent);
+        List<EventHandler> events = eventDslRepository.find(taskCompletedEvent.workflowName, EventType.TASK_COMPLETED);
+
+        for (EventHandler event : events) {
+            event.getConditions().forEach(condition -> condition.setActualValues(taskCompletedEvent));
+            event.getCommands().forEach(command -> command.setWorkflowName(taskCompletedEvent.workflowName));
+            evaluateConditionsAndSendCommands(event.getConditions(), event.getCommands(), taskCompletedEvent.instanceName);
+        }
+
     }
 
     private void onTaskTimeoutEvent(TaskTimeoutEvent taskTimeoutEvent) {
@@ -209,8 +219,11 @@ public class DeciderActor extends AbstractLoggingActor {
      * <p/>
      * *****************************************************************************
      */
+
+    public static class TaskEvent { }
+
     @Data @AllArgsConstructor
-    public static class TaskStartedEvent {
+    public static class TaskStartedEvent extends TaskEvent {
         private String taskName;
         private String input;
         private String instanceName;
@@ -218,7 +231,7 @@ public class DeciderActor extends AbstractLoggingActor {
     }
 
     @Data @AllArgsConstructor
-    public static class TaskCompletedEvent {
+    public static class TaskCompletedEvent extends TaskEvent {
         private String taskName;
         private String output;
         private String instanceName;
@@ -226,14 +239,14 @@ public class DeciderActor extends AbstractLoggingActor {
     }
 
     @Data @AllArgsConstructor
-    public static class TaskTimeoutEvent {
+    public static class TaskTimeoutEvent extends TaskEvent {
         private String taskName;
         private String instanceName;
         private String workflowName;
     }
 
     @Data @AllArgsConstructor
-    public static class TaskFailedEvent {
+    public static class TaskFailedEvent extends TaskEvent {
         private String taskName;
         private String instanceName;
         private String workflowName;
@@ -248,31 +261,40 @@ public class DeciderActor extends AbstractLoggingActor {
      * <p/>
      * *****************************************************************************
      */
+
+    public static class WorkflowEvent { }
+
     @Data @AllArgsConstructor
-    public static class WorkflowScheduledEvent {
+    public static class WorkflowScheduledEvent extends WorkflowEvent {
         private String workflowName;
     }
 
     @Data @AllArgsConstructor
-    public static class WorkflowStartedEvent {
-        private String workflowName;
-        private String instanceName;
-    }
-
-    @Data @AllArgsConstructor
-    public static class WorkflowCompletedEvent {
+    public static class WorkflowStartedEvent extends WorkflowEvent {
         private String workflowName;
         private String instanceName;
     }
 
     @Data @AllArgsConstructor
-    public static class WorkflowFailedEvent {
+    public static class WorkflowStoppedEvent extends WorkflowEvent {
         private String workflowName;
         private String instanceName;
     }
 
     @Data @AllArgsConstructor
-    public static class WorkflowCanceledEvent {
+    public static class WorkflowCompletedEvent extends WorkflowEvent {
+        private String workflowName;
+        private String instanceName;
+    }
+
+    @Data @AllArgsConstructor
+    public static class WorkflowFailedEvent extends WorkflowEvent {
+        private String workflowName;
+        private String instanceName;
+    }
+
+    @Data @AllArgsConstructor
+    public static class WorkflowCanceledEvent extends WorkflowEvent {
         private String workflowName;
         private String instanceName;
     }

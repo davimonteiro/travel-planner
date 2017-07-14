@@ -1,7 +1,6 @@
-package br.uece.beethoven.logic.dsl;
+package br.uece.beethoven.dsl;
 
 
-import br.uece.beethoven.engine.dsl.EventType;
 import lombok.Data;
 import lombok.ToString;
 

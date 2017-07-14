@@ -1,6 +1,6 @@
 package br.uece.beethoven.service;
 
-import br.uece.beethoven.engine.dsl.Workflow;
+import br.uece.beethoven.dsl.Workflow;
 import br.uece.beethoven.engine.WorkflowInstance;
 import org.springframework.stereotype.Service;
 

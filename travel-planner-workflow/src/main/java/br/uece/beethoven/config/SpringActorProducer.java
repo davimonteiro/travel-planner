@@ -1,4 +1,4 @@
-package br.uece.config;
+package br.uece.beethoven.config;
 
 import akka.actor.Actor;
 import akka.actor.IndirectActorProducer;

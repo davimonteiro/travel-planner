@@ -1,25 +1,16 @@
-package br.uece.beethoven.logic;
+package br.uece.beethoven.engine.core.support;
 
 
 import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
 import br.uece.beethoven.engine.WorkflowInstance;
-import br.uece.beethoven.service.WorkflowService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class WorkflowInstanceActor extends AbstractLoggingActor {
 
-    @Autowired
-    private WorkflowService workflowService;
-
-
-    private String workflowName;
+    private WorkflowInstance workflowInstance;
 
     @Override
     public Receive createReceive() {
-        WorkflowInstance workflowInstance = workflowService.findWorkflowInstanceById(getSelf().path().name());
-
-
         return null;
     }
 

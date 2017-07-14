@@ -4,9 +4,9 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import br.uece.beethoven.engine.core.ActorPath;
 import br.uece.beethoven.engine.core.DeciderActor;
-import br.uece.beethoven.engine.dsl.EventType;
-import br.uece.beethoven.engine.dsl.Workflow;
-import br.uece.beethoven.logic.dsl.EventHandler;
+import br.uece.beethoven.dsl.EventType;
+import br.uece.beethoven.dsl.Workflow;
+import br.uece.beethoven.dsl.EventHandler;
 import br.uece.beethoven.repository.TaskRepository;
 import br.uece.beethoven.repository.WorkflowRepository;
 import br.uece.domain.*;
@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
-import static br.uece.beethoven.engine.dsl.HttpActionBuilder.request;
-import static br.uece.beethoven.engine.dsl.TaskBuilder.task;
-import static br.uece.beethoven.engine.dsl.WorkflowBuilder.workflow;
-import static br.uece.beethoven.logic.dsl.CommandBuilder.startTask;
-import static br.uece.beethoven.logic.dsl.ConditionBuilder.condition;
-import static br.uece.beethoven.logic.dsl.EventDslBuilder.eventDsl;
+import static br.uece.beethoven.dsl.HttpActionBuilder.request;
+import static br.uece.beethoven.dsl.TaskBuilder.task;
+import static br.uece.beethoven.dsl.WorkflowBuilder.workflow;
+import static br.uece.beethoven.dsl.CommandBuilder.startTask;
+import static br.uece.beethoven.dsl.ConditionBuilder.condition;
+import static br.uece.beethoven.dsl.EventDslBuilder.eventDsl;
 import static java.util.Arrays.asList;
 
 @RestController

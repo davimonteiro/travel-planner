@@ -6,7 +6,7 @@ import akka.japi.pf.ReceiveBuilder;
 import br.uece.beethoven.engine.MetricRegistryUtils;
 import br.uece.beethoven.engine.TaskInstance;
 import br.uece.beethoven.engine.WorkflowInstance;
-import br.uece.beethoven.engine.dsl.Workflow;
+import br.uece.beethoven.dsl.Workflow;
 import br.uece.beethoven.repository.WorkflowRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;

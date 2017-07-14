@@ -2,8 +2,8 @@ package br.uece.beethoven.service;
 
 
 import akka.actor.ActorSystem;
-import br.uece.beethoven.engine.dsl.HttpRequest;
-import br.uece.beethoven.engine.dsl.Task;
+import br.uece.beethoven.dsl.HttpRequest;
+import br.uece.beethoven.dsl.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

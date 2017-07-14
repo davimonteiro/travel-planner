@@ -1,4 +1,4 @@
-package br.uece.config;
+package br.uece.beethoven.config;
 
 import akka.actor.ActorSystem;
 import com.fasterxml.jackson.annotation.JsonInclude;

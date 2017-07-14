@@ -4,9 +4,9 @@ package br.uece.beethoven.engine.core;
 import akka.actor.AbstractLoggingActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.japi.pf.ReceiveBuilder;
 import br.uece.beethoven.engine.WorkflowInstance;
+import br.uece.beethoven.engine.core.support.WorkflowInstanceActor;
 import br.uece.beethoven.repository.WorkflowInstanceRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,21 +44,26 @@ public class WorkflowActor extends AbstractLoggingActor {
 
     private void onScheduleWorkflowCommand(ScheduleWorkflowCommand scheduleWorkflowCommand) {
         log().debug("onScheduleWorkflowCommand: " + scheduleWorkflowCommand);
+        sendEvent(new DeciderActor.WorkflowScheduledEvent(scheduleWorkflowCommand.workflowName));
     }
 
     private void onStartWorkflowCommand(StartWorkflowCommand startWorkflowCommand) {
         log().debug("onStartWorkflowCommand: " + startWorkflowCommand);
+
         WorkflowInstance workflowInstance = createWorkflowInstance(startWorkflowCommand);
-        actorSystem.actorSelection(DECIDER_ACTOR)
-                .tell(new DeciderActor.WorkflowStartedEvent(startWorkflowCommand.workflowName, workflowInstance.getInstanceName()), ActorRef.noSender());
+        getContext().actorOf(WorkflowInstanceActor.props(), workflowInstance.getInstanceName());
+
+        sendEvent(new DeciderActor.WorkflowStartedEvent(startWorkflowCommand.workflowName, workflowInstance.getInstanceName()));
     }
 
     private void onStopWorkflowCommand(StopWorkflowCommand stopWorkflowCommand) {
         log().debug("onStopWorkflowCommand: " + stopWorkflowCommand);
+        sendEvent(new DeciderActor.WorkflowStoppedEvent(stopWorkflowCommand.workflowName, stopWorkflowCommand.instanceName));
     }
 
     private void onCancelWorkflowCommand(CancelWorkflowCommand cancelWorkflowCommand) {
         log().debug("onCancelWorkflowCommand: " + cancelWorkflowCommand);
+        sendEvent(new DeciderActor.WorkflowCanceledEvent(cancelWorkflowCommand.workflowName, cancelWorkflowCommand.instanceName));
     }
 
 
@@ -69,6 +74,10 @@ public class WorkflowActor extends AbstractLoggingActor {
         workflowInstanceRepository.save(workflowInstance);
 
         return workflowInstance;
+    }
+
+    private void sendEvent(DeciderActor.WorkflowEvent workflowEvent) {
+        actorSystem.actorSelection(DECIDER_ACTOR).tell(workflowEvent, ActorRef.noSender());
     }
 
 

@@ -1,6 +1,4 @@
-package br.uece.beethoven.engine.dsl;
-
-import br.uece.beethoven.logic.dsl.EventHandler;
+package br.uece.beethoven.dsl;
 
 import java.util.HashSet;
 

@@ -1,4 +1,4 @@
-package br.uece.beethoven.logic.dsl;
+package br.uece.beethoven.dsl;
 
 import br.uece.beethoven.engine.core.DeciderActor;
 import com.jayway.jsonpath.JsonPath;

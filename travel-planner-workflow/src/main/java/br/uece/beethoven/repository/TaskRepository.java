@@ -1,12 +1,11 @@
 package br.uece.beethoven.repository;
 
 
-import br.uece.beethoven.engine.dsl.Task;
+import br.uece.beethoven.dsl.Task;
 import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

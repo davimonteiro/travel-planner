@@ -1,11 +1,9 @@
-package br.uece.beethoven.engine.dsl;
+package br.uece.beethoven.dsl;
 
 
-import br.uece.beethoven.logic.dsl.EventHandler;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -13,9 +11,7 @@ import java.util.Set;
 public class Workflow {
 
     private String name;
-
     private Set<Task> tasks;
-
     private Set<EventHandler> eventHandlers;
 
 }

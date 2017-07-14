@@ -1,4 +1,4 @@
-package br.uece.beethoven.logic.dsl;
+package br.uece.beethoven.dsl;
 
 public class CommandBuilder {
 

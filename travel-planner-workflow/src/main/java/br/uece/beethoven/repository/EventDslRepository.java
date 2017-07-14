@@ -1,8 +1,8 @@
 package br.uece.beethoven.repository;
 
-import br.uece.beethoven.engine.dsl.EventType;
-import br.uece.beethoven.engine.dsl.Workflow;
-import br.uece.beethoven.logic.dsl.EventHandler;
+import br.uece.beethoven.dsl.EventType;
+import br.uece.beethoven.dsl.Workflow;
+import br.uece.beethoven.dsl.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

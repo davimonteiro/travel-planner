@@ -1,4 +1,4 @@
-package br.uece.config;
+package br.uece.beethoven.config;
 
 import akka.actor.AbstractExtensionId;
 import akka.actor.ExtendedActorSystem;
